@@ -23,27 +23,123 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
         });
     });
 };
-const getMarketTickersPromise = () => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('public/getmarkets').then(markets => {
-            let tickerPromises = [];
-            markets.forEach((market, marketIndex) => {
-                if (market.IsActive) {
-                    tickerPromises.push(`${markets[marketIndex].BaseCurrency}-${markets[marketIndex].MarketCurrency}`);
-                    tickerPromises.push(bittrexRequest('public/getticker', `market=${markets[marketIndex].BaseCurrency}-${markets[marketIndex].MarketCurrency}`));
-                }
-            });
-            return Promise.all(tickerPromises);
-        }).then(markets => {
-            let jsonMarkets = {};
-            let timestamp = (new Date().getTime());
-            for (let i = 0; i < markets.length; i = i + 2) {
-                markets[i + 1].timestamp = timestamp;
-                jsonMarkets[markets[i]] = markets[i + 1];
-            }
-            resolve(jsonMarkets);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
+
+// PUBLIC
+
+bittrexRequest('public/getmarkets', '', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('public/getcurrencies', '', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('public/getmarketsummaries', '', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('public/getticker', 'market=MARKET', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('public/getmarketsummary', 'market=MARKET', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('public/getmarkethistory', 'market=MARKET', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('public/getorderbook', 'market=MARKET&type=TYPE', 'v1.1', '').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+// ACCOUNT
+
+bittrexRequest('account/getbalances', 'apikey=APIKEY', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('account/getbalance', 'apikey=APIKEY&currency=CURRENCY', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('account/getdepositaddress', 'apikey=APIKEY&currency=CURRENCY', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+// bittrexRequest('account/withdraw', 'apikey=APIKEY&currency=CURRENCY&quantity=QUANTITY&address=ADDRESS', 'v1.1', 'SECRET').then(out => {
+//     console.log(out);
+// }).catch(err => {
+//     console.log(err);
+// });
+
+// bittrexRequest('account/getorder', 'apikey=APIKEY&uuid=UUID', 'v1.1', 'SECRET').then(out => {
+//     console.log(out);
+// }).catch(err => {
+//     console.log(err);
+// });
+
+bittrexRequest('account/getorderhistory', 'apikey=APIKEY&market=MARKET', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('account/getwithdrawalhistory', 'apikey=APIKEY&market=MARKET', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+bittrexRequest('account/getdeposithistory', 'apikey=APIKEY&market=MARKET', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
+
+// MARKET
+
+// bittrexRequest('market/buylimit', 'apikey=APIKEY&market=MARKET&quantity=QUANTITY&rate=RATE', 'v1.1', 'SECRET').then(out => {
+//     console.log(out);
+// }).catch(err => {
+//     console.log(err);
+// });
+
+// bittrexRequest('market/selllimit', 'apikey=APIKEY&market=MARKET&quantity=QUANTITY&rate=RATE', 'v1.1', 'SECRET').then(out => {
+//     console.log(out);
+// }).catch(err => {
+//     console.log(err);
+// });
+
+// bittrexRequest('market/cancel', 'apikey=APIKEY&uuid=UUID', 'v1.1', 'SECRET').then(out => {
+//     console.log(out);
+// }).catch(err => {
+//     console.log(err);
+// });
+
+bittrexRequest('market/getopenorders', 'apikey=APIKEY&market=MARKET', 'v1.1', 'SECRET').then(out => {
+    console.log(out);
+}).catch(err => {
+    console.log(err);
+});
