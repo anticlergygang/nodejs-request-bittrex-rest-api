@@ -2,9 +2,9 @@ const https = require('https');
 const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
     return new Promise((resolve, reject) => {
         let path = `/api/${version}/${method}?${query}&nonce=${(new Date().getTime())}`;
-        let url = `https://bittrex.com${path}`;
+        let url = `https://www.bittrex.com${path}`;
         let req = https.request({
-            host: 'bittrex.com',
+            host: 'www.bittrex.com',
             path: path,
             port: 443,
             method: 'GET',
