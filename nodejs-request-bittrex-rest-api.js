@@ -1,4 +1,5 @@
 const request = require('request');
+
 const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
     return new Promise((resolve, reject) => {
         let url = `https://bittrex.com/api/${version}/${method}?${query}&nonce=${(new Date().getTime)}`;
@@ -24,7 +25,6 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
     });
 };
 
-// PUBLIC
 exports.getmarkets = () => {
     return new Promise((resolve, reject) => {
         bittrexRequest('public/getmarkets', '', 'v1.1', '').then(out => {
@@ -95,8 +95,6 @@ exports.getorderbook = (market, type) => {
         });
     });
 };
-
-// ACCOUNT
 
 exports.getbalances = (apikey, secret) => {
     return new Promise((resolve, reject) => {
@@ -177,8 +175,6 @@ exports.getdeposithistory = (apikey, secret, market) => {
         });
     });
 };
-
-// MARKET
 
 exports.buylimit = (apikey, secret, market, quantity, rate) => {
     return new Promise((resolve, reject) => {
