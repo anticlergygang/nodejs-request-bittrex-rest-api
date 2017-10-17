@@ -1,3 +1,5 @@
+Find a dev: https://discord.gg/PKk3Xc4
+
 https://bittrex.com/home/api
 ```javascript
 const bittrex = require('nodejs-request-bittrex-rest-api');
