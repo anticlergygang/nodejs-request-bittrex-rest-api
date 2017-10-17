@@ -17,15 +17,16 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
                 data = data.concat(chunk);
             });
             res.on('end', () => {
-                Promise.resolve(JSON.parse(data)).then(jsonRes => {
+                try {
+                    let jsonRes = JSON.parse(data)
                     if (jsonRes.success) {
                         resolve(jsonRes.result);
                     } else {
                         reject(jsonRes.message);
                     }
-                }).catch(err => {
-                    reject(err);
-                });
+                } catch (e) {
+                    reject(e);
+                }
             });
         });
         req.on('error', (e) => {
