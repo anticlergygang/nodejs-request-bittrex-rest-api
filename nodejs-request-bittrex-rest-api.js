@@ -1,27 +1,37 @@
-const request = require('request');
-
+const https = require('https');
 const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
     return new Promise((resolve, reject) => {
-        let url = `https://bittrex.com/api/${version}/${method}?${query}&nonce=${(new Date().getTime)}`;
-        request.get({
-            url: url,
+        let path = `/api/${version}/${method}?${query}&nonce=${(new Date().getTime())}`;
+        let url = `https://bittrex.com${path}`;
+        let req = https.request({
+            host: 'bittrex.com',
+            path: path,
+            port: 443,
+            method: 'GET',
             headers: {
-                'User-Agent': 'request',
-                'content-type': 'application/json',
                 'apisign': crypto.createHmac('sha512', secret).update(url).digest('hex')
             }
-        }, (err, body, res) => {
-            if (err) {
-                reject(err);
-            } else {
-                let jsonRes = JSON.parse(res);
-                if (jsonRes.success === true) {
-                    resolve(jsonRes.result);
-                } else {
-                    reject(jsonRes.message);
-                }
-            }
+        }, (res) => {
+            let data = '';
+            res.on('data', (chunk) => {
+                data = data.concat(chunk);
+            });
+            res.on('end', () => {
+                Promise.resolve(JSON.parse(data)).then(jsonRes => {
+                    if (jsonRes.success) {
+                        resolve(jsonRes.result);
+                    } else {
+                        reject(jsonRes.message);
+                    }
+                }).catch(err => {
+                    reject(err);
+                });
+            });
         });
+        req.on('error', (e) => {
+            reject(e);
+        });
+        req.end();
     });
 };
 
