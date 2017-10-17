@@ -1,0 +1,19 @@
+{
+  "name": "nodejs-request-bittrex-rest-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "nodejs-request-bittrex-rest-api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anticlergygang/nodejs-resquest-bittrex-rest-api.git"
+  },
+  "author": "Jason Clay (AntiCLergy)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/anticlergygang/nodejs-resquest-bittrex-rest-api/issues"
+  },
+  "homepage": "https://github.com/anticlergygang/nodejs-resquest-bittrex-rest-api#readme"
+}

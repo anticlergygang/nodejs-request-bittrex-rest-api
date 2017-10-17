@@ -35,7 +35,7 @@ exports.getmarkets = () => {
     });
 };
 
-exports.geturrencies = () => {
+exports.getcurrencies = () => {
     return new Promise((resolve, reject) => {
         bittrexRequest('public/getcurrencies', '', 'v1.1', '').then(out => {
             resolve(out);
