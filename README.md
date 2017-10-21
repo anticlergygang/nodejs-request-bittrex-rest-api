@@ -21,6 +21,9 @@ bittrex.getmarketsummary(market).then(out => {
 bittrex.getmarkethistory(market).then(out => {
     console.log(out);
 }).catch(err => {});
+bittrex.getticks(marketName, tickInterval).then(out => {
+    console.log(out);
+}).catch(err => {});
 bittrex.getorderbook(market, type).then(out => {
     console.log(out);
 }).catch(err => {});
