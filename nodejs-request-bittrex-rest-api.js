@@ -237,3 +237,48 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
         });
     });
 };
+
+// Warning, this any2any method is experimental.
+// This promise may resolve with an unexpected expected result.
+// If it gets the rate wrong, it may result in bad trade.
+// Just don't use this unless you know whats going to happen.
+exports.any2any = (apikey, secret, currencyFrom, currencyTo, fromQuantity) => {
+    return new Promise((resolve, reject) => {
+        Promise.all([bittrexRequest('account/getbalance', `apikey=${apikey}&currency=${currencyFrom}`, 'v1.1', secret), bittrexRequest('account/getbalance', `apikey=${apikey}&currency=${currencyTo}`, 'v1.1', secret), bittrexRequest('public/getticker', `market=BTC-${currencyFrom}`, 'v1.1', ''), bittrexRequest('public/getticker', `market=BTC-${currencyTo}`, 'v1.1', '')]).then(fromCurr0toCurr1fromBid2toAsk3 => {
+            if (fromQuantity <= fromCurr0toCurr1fromBid2toAsk3[0].Balance) {
+                bittrexRequest('market/selllimit', `apikey=${apikey}&market=BTC-${fromCurr0toCurr1fromBid2toAsk3[0].Currency}&quantity=${fromQuantity}&rate=${fromCurr0toCurr1fromBid2toAsk3[2].Bid}`, 'v1.1', secret).then(sellOrder => {
+                    let checkIfSellClosed = setInterval(() => {
+                        bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${sellOrder.uuid}`, 'v1.1', secret).then(sellOrderInfo => {
+                            if (!sellOrderInfo.IsOpen) {
+                                clearInterval(checkIfSellClosed);
+                                setTimeout(() => {
+                                    bittrexRequest('market/buylimit', `apikey=${apikey}&market=BTC-${fromCurr0toCurr1fromBid2toAsk3[1].Currency}&quantity=${(((sellOrderInfo.Price - sellOrderInfo.CommissionPaid)-sellOrderInfo.CommissionPaid)/(fromCurr0toCurr1fromBid2toAsk3[3].Ask))}&rate=${fromCurr0toCurr1fromBid2toAsk3[3].Ask}`, 'v1.1', secret).then(buyOrder => {
+                                        let checkIfBuyClosed = setInterval(() => {
+                                            bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${buyOrder.uuid}`, 'v1.1', secret).then(buyOrderInfo => {
+                                                if (!buyOrderInfo.IsOpen) {
+                                                    resolve(buyOrderInfo);
+                                                }
+                                            }).catch(err => {
+                                                clearInterval(checkIfBuyClosed);
+                                                reject(err);
+                                            });
+                                        }, 2000);
+                                    }).catch(err => {
+                                        reject(err);
+                                    });
+                                }, 5000);
+                            }
+                        }).catch(err => {
+                            clearInterval(checkIfSellClosed);
+                            reject(err);
+                        });
+                    }, 2000);
+                }).catch(err => {
+                    reject(err);
+                });
+            }
+        }).catch(err => {
+            reject(err);
+        });
+    });
+};

@@ -86,4 +86,12 @@ bittrex.cancel(apikey, secret, uuid).then(out => {
 bittrex.getopenorders(apikey, secret, marketName).then(out => {
     console.log(out);
 }).catch(err => {});
+
+// Warning, this any2any method is experimental.
+// This promise may resolve with an unexpected expected result.
+// If it gets the rate wrong, it may result in bad trade.
+// Just don't use this unless you know whats going to happen.
+bittrex.any2any(apikey, secret, currencyFrom, currencyTo, fromQuantity).then(out => {
+    console.log(out);
+}).catch(err => {});
 ```
