@@ -1,6 +1,6 @@
 {
   "name": "nodejs-request-bittrex-rest-api",
-  "version": "1.0.11",
+  "version": "1.0.12",
   "description": "Find a dev: https://discord.gg/PKk3Xc4",
   "main": "nodejs-request-bittrex-rest-api.js",
   "scripts": {
