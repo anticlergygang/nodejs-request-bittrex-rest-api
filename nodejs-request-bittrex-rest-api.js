@@ -227,3 +227,13 @@ exports.getopenorders = (apikey, secret, market) => {
         });
     });
 };
+
+exports.getticks = (marketName, tickInterval = 'fiveMin') => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(out => {
+            resolve(out);
+        }).catch(err => {
+            reject(err);
+        });
+    });
+};
