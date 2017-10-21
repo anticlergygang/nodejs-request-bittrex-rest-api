@@ -2,6 +2,7 @@
   "name": "nodejs-request-bittrex-rest-api",
   "version": "1.0.15",
   "description": "Find a dev: https://discord.gg/PKk3Xc4",
+  "keywords": ["bittrex","crypto","cryptocurrency","api","REST","bitcoin","altcoin","exchange"],
   "main": "nodejs-request-bittrex-rest-api.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
