@@ -29,12 +29,12 @@ bittrex.getmarkethistory(marketName).then(out => {
     console.log(out);
 }).catch(err => {});
 
-// tickInterval must be one of the following 'oneMin', 'fiveMin', 'thirtyMin', 'hour', or 'day'
+// 'tickInterval' must be one of the following 'oneMin', 'fiveMin', 'thirtyMin', 'hour', or 'day'.
 bittrex.getticks(marketName, tickInterval).then(out => {
     console.log(out);
 }).catch(err => {});
 
-// type must be one of the following 'buy', 'sell', 'both'
+// 'type' must be one of the following 'buy', 'sell', or 'both'.
 bittrex.getorderbook(marketName, type).then(out => {
     console.log(out);
 }).catch(err => {});
