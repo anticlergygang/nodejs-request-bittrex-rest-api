@@ -256,6 +256,7 @@ exports.any2any = (apikey, secret, currencyFrom, currencyTo, fromQuantity) => {
                                         let checkIfBuyClosed = setInterval(() => {
                                             bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${buyOrder.uuid}`, 'v1.1', secret).then(buyOrderInfo => {
                                                 if (!buyOrderInfo.IsOpen) {
+                                                    clearInterval(checkIfBuyClosed);
                                                     resolve(buyOrderInfo);
                                                 }
                                             }).catch(err => {
