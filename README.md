@@ -1,4 +1,6 @@
-[![DUB](https://img.shields.io/dub/l/vibe-d.svg)]()[![DUB](https://img.shields.io/badge/discord-https%3A%2F%2Fdiscord.gg%2FPKk3Xc4-brightgreen.svg?link=https://discord.gg/PKk3Xc4)]()  
+Enjoy!
+
+Find a dev: https://discord.gg/PKk3Xc4
 
 Get your apikey and sceret from: https://bittrex.com/home/api
 
