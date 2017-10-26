@@ -1,3 +1,4 @@
+[![DUB](https://img.shields.io/dub/l/vibe-d.svg)]()
 Find a dev: https://discord.gg/PKk3Xc4
 
 Get your apikey and sceret from: https://bittrex.com/home/api

@@ -243,42 +243,86 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
 // This promise may resolve with an unexpected expected result.
 // If it gets the rate wrong, it may result in bad trade.
 // Just don't use this unless you know whats going to happen.
-exports.any2any = (apikey, secret, currencyFrom, currencyTo, fromQuantity) => {
+exports.any2any = (apikey, secret, currencyFrom, currencyTo, quantity) => {
     return new Promise((resolve, reject) => {
-        Promise.all([bittrexRequest('account/getbalance', `apikey=${apikey}&currency=${currencyFrom}`, 'v1.1', secret), bittrexRequest('account/getbalance', `apikey=${apikey}&currency=${currencyTo}`, 'v1.1', secret), bittrexRequest('public/getticker', `market=BTC-${currencyFrom}`, 'v1.1', ''), bittrexRequest('public/getticker', `market=BTC-${currencyTo}`, 'v1.1', '')]).then(fromCurr0toCurr1fromBid2toAsk3 => {
-            if (fromQuantity <= fromCurr0toCurr1fromBid2toAsk3[0].Balance) {
-                bittrexRequest('market/selllimit', `apikey=${apikey}&market=BTC-${fromCurr0toCurr1fromBid2toAsk3[0].Currency}&quantity=${fromQuantity}&rate=${fromCurr0toCurr1fromBid2toAsk3[2].Bid}`, 'v1.1', secret).then(sellOrder => {
-                    let checkIfSellClosed = setInterval(() => {
-                        bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${sellOrder.uuid}`, 'v1.1', secret).then(sellOrderInfo => {
-                            if (!sellOrderInfo.IsOpen) {
-                                clearInterval(checkIfSellClosed);
-                                setTimeout(() => {
-                                    bittrexRequest('market/buylimit', `apikey=${apikey}&market=BTC-${fromCurr0toCurr1fromBid2toAsk3[1].Currency}&quantity=${(((sellOrderInfo.Price - sellOrderInfo.CommissionPaid)-sellOrderInfo.CommissionPaid)/(fromCurr0toCurr1fromBid2toAsk3[3].Ask))}&rate=${fromCurr0toCurr1fromBid2toAsk3[3].Ask}`, 'v1.1', secret).then(buyOrder => {
-                                        let checkIfBuyClosed = setInterval(() => {
-                                            bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${buyOrder.uuid}`, 'v1.1', secret).then(buyOrderInfo => {
-                                                if (!buyOrderInfo.IsOpen) {
-                                                    clearInterval(checkIfBuyClosed);
-                                                    resolve(buyOrderInfo);
+        let activeMarkets = {};
+        let currencyFromBases = [];
+        let currencyToBases = [];
+        let currencyFromMarkets = [];
+        let currencyToMarkets = [];
+        let currenciesShareABaseCurrency = false;
+        let sharedBaseCurrency = '';
+        bittrexRequest('public/getmarketsummaries', '', 'v1.1', '').then(markets => {
+            markets.forEach((market, marketIndex) => {
+                activeMarkets[market.MarketName] = market;
+            });
+            Object.keys(activeMarkets).forEach((activeMarketName, activeMarketNameIndex) => {
+                if (activeMarketName.split('-')[1] === currencyFrom) {
+                    currencyFromBases.push(activeMarketName.split('-')[0]);
+                }
+                if (activeMarketName.split('-')[1] === currencyTo) {
+                    currencyToBases.push(activeMarketName.split('-')[0]);
+                }
+                if (activeMarketName.split('-')[0] === currencyFrom) {
+                    currencyFromMarkets.push(activeMarketName.split('-')[1]);
+                }
+                if (activeMarketName.split('-')[0] === currencyTo) {
+                    currencyToMarkets.push(activeMarketName.split('-')[1]);
+                }
+            });
+            currencyFromBases.forEach((currencyFromBase, currencyFromBaseIndex) => {
+                currencyToBases.forEach((currencyToBase, currencyToBaseIndex) => {
+                    if (currencyFromBase === currencyToBase) {
+                        currenciesShareABaseCurrency = true;
+                        sharedBaseCurrency = currencyToBase;
+                    }
+                });
+            });
+            if (Object.keys(activeMarkets).indexOf(`${currencyFrom}-${currencyTo}`) !== -1) {
+                var marketName = `${currencyFrom}-${currencyTo}`;
+                return bittrexRequest('market/buylimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity / activeMarkets[marketName].Ask}&rate=${activeMarkets[marketName].Ask}`, 'v1.1', secret);
+            } else if (Object.keys(activeMarkets).indexOf(`${currencyTo}-${currencyFrom}`) !== -1) {
+                var marketName = `${currencyTo}-${currencyFrom}`;
+                return bittrexRequest('market/selllimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity}&rate=${activeMarkets[marketName].Bid}`, 'v1.1', secret);
+            } else if (currenciesShareABaseCurrency) {
+                return new Promise((resolve, reject) => {
+                    var marketName1 = `${sharedBaseCurrency}-${currencyFrom}`;
+                    var marketName2 = `${sharedBaseCurrency}-${currencyTo}`;
+                    bittrexRequest('market/selllimit', `apikey=${apikey}&market=${marketName1}&quantity=${quantity}&rate=${activeMarkets[marketName1].Bid}`, 'v1.1', secret).then(sellUuid => {
+                        const checkIfSellCloseInterval = setInterval(() => {
+                            bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${sellUuid.uuid}`, 'v1.1', secret).then(sellOrder => {
+                                if (!sellOrder.IsOpen) {
+                                    clearInterval(checkIfSellCloseInterval);
+                                    bittrexRequest('market/buylimit', `apikey=${apikey}&market=${marketName2}&quantity=${((sellOrder.Price - sellOrder.CommissionPaid)-sellOrder.CommissionPaid) / activeMarkets[marketName2].Ask}&rate=${activeMarkets[marketName2].Ask}`, 'v1.1', secret).then(buyUuid => {
+                                        const checkIfBuyCloseInterval = setInterval(() => {
+                                            bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${buyUuid.uuid}`, 'v1.1', secret).then(buyOrder => {
+                                                if (!buyOrder.IsOpen) {
+                                                    clearInterval(checkIfBuyCloseInterval);
+                                                    resolve('currency converted');
                                                 }
                                             }).catch(err => {
-                                                clearInterval(checkIfBuyClosed);
+                                                clearInterval(checkIfBuyCloseInterval);
                                                 reject(err);
                                             });
                                         }, 2000);
                                     }).catch(err => {
+                                        clearInterval(checkIfSellCloseInterval);
                                         reject(err);
                                     });
-                                }, 5000);
-                            }
-                        }).catch(err => {
-                            clearInterval(checkIfSellClosed);
-                            reject(err);
-                        });
-                    }, 2000);
-                }).catch(err => {
-                    reject(err);
+                                }
+                            }).catch(err => {
+                                reject(err);
+                            });
+                        }, 2000);
+                    }).catch(err => {
+                        reject(err);
+                    });
                 });
+            } else {
+                return Promise.resolve('fawkenll');
             }
+        }).then(out => {
+            resolve(out);
         }).catch(err => {
             reject(err);
         });
