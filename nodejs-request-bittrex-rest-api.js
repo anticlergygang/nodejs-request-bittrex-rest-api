@@ -266,7 +266,7 @@ exports.getmarketrsi = (marketName, tickInterval, period) => {
                         } else {
                             // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
                         }
-                        rsi.push({ index: tickIndex, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
+                        rsi.push({ index: tickIndex, time: ticks[tickIndex].T, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     } else {
                         if (ticks[tickIndex].C - ticks[tickIndex - 1].C > 0) {
                             averageGain = ((averageGain * (period - 1)) + (ticks[tickIndex].C - ticks[tickIndex - 1].C)) / period;
@@ -277,7 +277,7 @@ exports.getmarketrsi = (marketName, tickInterval, period) => {
                             averageLoss = ((averageLoss * (period - 1)) + ((ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1)) / period;
                             // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
                         }
-                        rsi.push({ index: tickIndex, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
+                        rsi.push({ index: tickIndex, time: ticks[tickIndex].T, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
                         // 100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))
