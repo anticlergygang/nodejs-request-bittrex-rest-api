@@ -90,7 +90,7 @@ bittrex.getopenorders(apikey, secret, marketName).then(out => {
 }).catch(err => {});
 
 // Warning, this any2any method is experimental.
-// Using USDT in its regular marks works fine.
+// Using USDT in its regular markets works fine.
 // USDT-ANY will be added soon.
 // This promise may resolve with an unexpected expected result.
 // If it gets the rate wrong, it may result in bad trade.
