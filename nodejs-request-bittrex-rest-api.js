@@ -240,6 +240,7 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
 
 exports.getmarketrsi = (marketName, tickInterval, period) => {
     return new Promise((resolve, reject) => {
+        let rsi = [];
         let averageGain = 0;
         let averageLoss = 0;
         bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
@@ -265,6 +266,7 @@ exports.getmarketrsi = (marketName, tickInterval, period) => {
                         } else {
                             // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
                         }
+                        rsi.push({ index: tickIndex, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     } else {
                         if (ticks[tickIndex].C - ticks[tickIndex - 1].C > 0) {
                             averageGain = ((averageGain * (period - 1)) + (ticks[tickIndex].C - ticks[tickIndex - 1].C)) / period;
@@ -275,9 +277,11 @@ exports.getmarketrsi = (marketName, tickInterval, period) => {
                             averageLoss = ((averageLoss * (period - 1)) + ((ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1)) / period;
                             // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
                         }
+                        rsi.push({ index: tickIndex, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
-                        resolve(100 - (100 / (1 + (averageGain / period) / (averageLoss / period))));
+                        // 100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))
+                        resolve(rsi);
                     }
                 } else {
                     // console.log(`\ntickIndex: ${tickIndex}\nclose: ${tick.C}`);
