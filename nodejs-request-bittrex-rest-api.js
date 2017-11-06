@@ -240,6 +240,8 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
 
 exports.getmarketrsi = (marketName, tickInterval, period) => {
     return new Promise((resolve, reject) => {
+        let averageGain = 0;
+        let averageLoss = 0;
         bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
