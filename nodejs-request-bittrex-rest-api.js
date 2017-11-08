@@ -303,6 +303,7 @@ exports.getmarketmacd = (marketName, tickInterval, fastSMAPeriod, slowSMAPeriod,
             let signalSMA = 0;
             let signalSMALine = [];
             let macdLine = [];
+            let macdHistogram = [];
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
                     let hlc3 = (tick.H + tick.L + tick.C) / 3;
@@ -328,18 +329,22 @@ exports.getmarketmacd = (marketName, tickInterval, fastSMAPeriod, slowSMAPeriod,
                     }
                 } else {}
             });
-            // macdLine.forEach((macdLinePoint, macdLinePointIndex) => {
-            //     if (macdLinePointIndex < signalSMAPeriod) {
-            //         signalSMA = signalSMA + macdLine[macdLinePointIndex];
-            //     } else if (macdLinePointIndex === signalSMAPeriod) {
-            //         signalSMA = signalSMA + macdLine[macdLinePointIndex];
-            //         signalSMALine.push(signalSMA / signalSMAPeriod);
-            //     } else if (macdLinePointIndex > signalSMAPeriod) {
-            //         signalSMA = (((signalSMA / signalSMAPeriod) * (signalSMAPeriod - 1)) + macdLine[macdLinePointIndex - 1]);
-            //         signalSMALine.push(signalSMA / signalSMAPeriod);
-            //     }
-            // });
-            resolve(macdLine[macdLine.length - 1]);
+            macdLine.forEach((macdLinePoint, macdLinePointIndex) => {
+                if (macdLinePointIndex !== 0) {
+                    if (macdLinePointIndex < signalSMAPeriod) {
+                        signalSMA = signalSMA + macdLinePoint;
+                    } else if (macdLinePointIndex === signalSMAPeriod) {
+                        signalSMA = signalSMA + macdLinePoint;
+                        signalSMALine.push(signalSMA / signalSMAPeriod);
+                        macdHistogram.push(macdLinePoint - (signalSMA / signalSMAPeriod));
+                    } else if (macdLinePointIndex > signalSMAPeriod) {
+                        signalSMA = (((signalSMA / signalSMAPeriod) * (signalSMAPeriod - 1)) + macdLinePoint);
+                        signalSMALine.push(signalSMA / signalSMAPeriod);
+                        macdHistogram.push(macdLinePoint - (signalSMA / signalSMAPeriod));
+                    }
+                } else {}
+            });
+            resolve(macdHistogram);
         }).catch(err => {
             reject(err);
         });
