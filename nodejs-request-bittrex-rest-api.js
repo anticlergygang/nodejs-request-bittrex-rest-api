@@ -293,64 +293,6 @@ exports.getmarketrsi = (marketName, tickInterval, period) => {
     });
 };
 
-exports.getmarketmacd = (marketName, tickInterval, fastSMAPeriod, slowSMAPeriod, signalSMAPeriod) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
-            let fastSMA = 0;
-            let fastSMALine = [];
-            let slowSMA = 0;
-            let slowSMALine = [];
-            let signalSMA = 0;
-            let signalSMALine = [];
-            let macdLine = [];
-            let macdHistogram = [];
-            ticks.forEach((tick, tickIndex) => {
-                if (tickIndex !== 0) {
-                    let hlc3 = (tick.H + tick.L + tick.C) / 3;
-                    if (tickIndex < fastSMAPeriod) {
-                        fastSMA = fastSMA + hlc3;
-                    } else if (tickIndex === fastSMAPeriod) {
-                        fastSMA = fastSMA + hlc3;
-                        fastSMALine.push(fastSMA / fastSMAPeriod);
-                    } else if (tickIndex > fastSMAPeriod) {
-                        fastSMA = (((fastSMA / fastSMAPeriod) * (fastSMAPeriod - 1)) + hlc3);
-                        fastSMALine.push(fastSMA / fastSMAPeriod);
-                    }
-                    if (tickIndex < slowSMAPeriod) {
-                        slowSMA = slowSMA + hlc3;
-                    } else if (tickIndex === slowSMAPeriod) {
-                        slowSMA = slowSMA + hlc3;
-                        slowSMALine.push(slowSMA / slowSMAPeriod);
-                        macdLine.push((fastSMA / fastSMAPeriod) - (slowSMA / slowSMAPeriod));
-                    } else if (tickIndex > slowSMAPeriod) {
-                        slowSMA = (((slowSMA / slowSMAPeriod) * (slowSMAPeriod - 1)) + hlc3);
-                        slowSMALine.push(slowSMA / slowSMAPeriod);
-                        macdLine.push((fastSMA / fastSMAPeriod) - (slowSMA / slowSMAPeriod));
-                    }
-                } else {}
-            });
-            macdLine.forEach((macdLinePoint, macdLinePointIndex) => {
-                if (macdLinePointIndex !== 0) {
-                    if (macdLinePointIndex < signalSMAPeriod) {
-                        signalSMA = signalSMA + macdLinePoint;
-                    } else if (macdLinePointIndex === signalSMAPeriod) {
-                        signalSMA = signalSMA + macdLinePoint;
-                        signalSMALine.push(signalSMA / signalSMAPeriod);
-                        macdHistogram.push(macdLinePoint - (signalSMA / signalSMAPeriod));
-                    } else if (macdLinePointIndex > signalSMAPeriod) {
-                        signalSMA = (((signalSMA / signalSMAPeriod) * (signalSMAPeriod - 1)) + macdLinePoint);
-                        signalSMALine.push(signalSMA / signalSMAPeriod);
-                        macdHistogram.push(macdLinePoint - (signalSMA / signalSMAPeriod));
-                    }
-                } else {}
-            });
-            resolve(macdHistogram);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
 // Warning, this any2any method is experimental.
 // Using USDT in its regular markets works fine.
 // USDT-ANY will be added soon.
