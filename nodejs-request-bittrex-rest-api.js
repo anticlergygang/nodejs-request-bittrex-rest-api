@@ -328,18 +328,18 @@ exports.getmarketmacd = (marketName, tickInterval, fastSMAPeriod, slowSMAPeriod,
                     }
                 } else {}
             });
-            macdLine.forEach((macdLinePoint, macdLinePointIndex) => {
-                if (macdLinePointIndex < signalSMAPeriod) {
-                    signalSMA = signalSMA + macdLine[macdLinePointIndex];
-                } else if (macdLinePointIndex === signalSMAPeriod) {
-                    signalSMA = signalSMA + macdLine[macdLinePointIndex];
-                    signalSMALine.push(signalSMA / signalSMAPeriod);
-                } else if (macdLinePointIndex > signalSMAPeriod) {
-                    signalSMA = (((signalSMA / signalSMAPeriod) * (signalSMAPeriod - 1)) + macdLine[macdLinePointIndex - 1]);
-                    signalSMALine.push(signalSMA / signalSMAPeriod);
-                }
-            });
-            resolve(macdLine[macdLine.length - 1] - signalSMALine[signalSMALine.length - 1]);
+            // macdLine.forEach((macdLinePoint, macdLinePointIndex) => {
+            //     if (macdLinePointIndex < signalSMAPeriod) {
+            //         signalSMA = signalSMA + macdLine[macdLinePointIndex];
+            //     } else if (macdLinePointIndex === signalSMAPeriod) {
+            //         signalSMA = signalSMA + macdLine[macdLinePointIndex];
+            //         signalSMALine.push(signalSMA / signalSMAPeriod);
+            //     } else if (macdLinePointIndex > signalSMAPeriod) {
+            //         signalSMA = (((signalSMA / signalSMAPeriod) * (signalSMAPeriod - 1)) + macdLine[macdLinePointIndex - 1]);
+            //         signalSMALine.push(signalSMA / signalSMAPeriod);
+            //     }
+            // });
+            resolve(macdLine[macdLine.length - 1]);
         }).catch(err => {
             reject(err);
         });
