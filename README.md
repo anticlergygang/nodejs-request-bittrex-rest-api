@@ -89,6 +89,11 @@ bittrex.getopenorders(apikey, secret, marketName).then(out => {
     console.log(out);
 }).catch(err => {});
 
+// 'tickInterval' must be one of the following 'oneMin', 'fiveMin', 'thirtyMin', 'hour', or 'day'.
+bittrex.getmarketrsi(marketName, tickInterval, period).then(out => {
+    console.log(out)
+}).catch(err => {};
+
 // Warning, this any2any method is experimental.
 // Using USDT in its regular markets works fine.
 // USDT-ANY will be added soon.
