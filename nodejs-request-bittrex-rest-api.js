@@ -19,7 +19,6 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
             });
             res.on('end', () => {
                 try {
-                    console.log(data);
                     let jsonRes = JSON.parse(data);
                     if (jsonRes.success) {
                         resolve(jsonRes.result);
