@@ -289,7 +289,7 @@ exports.getmarketmacdindicator = (marketName, tickInterval, fastMovingAveragePer
         let closeFastMovingAverageLine = [];
         let closeSlowMovingAverageLine = [];
         let signalMovingAverageLine = [];
-        bittrex.getticks(marketName, tickInterval).then(ticks => {
+        bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
                     if (tickIndex < fastMovingAveragePeriod) {
