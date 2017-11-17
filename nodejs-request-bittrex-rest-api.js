@@ -270,7 +270,7 @@ exports.getmarketrsiline = (marketName, tickInterval, period) => {
                         rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
-                        resolve(rsiLine);
+                        resolve({ rsiLine: rsiLine });
                     }
                 } else {}
             });
@@ -289,7 +289,7 @@ exports.getmarketmacdline = (marketName, tickInterval, fastMAPeriod, slowMAPerio
         let closeFastMALine = [];
         let closeSlowMALine = [];
         let signalMALine = [];
-        bittrex.getticks(marketName, interval).then(ticks => {
+        bittrex.getticks(marketName, tickInterval).then(ticks => {
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
                     if (tickIndex < fastMAPeriod) {
