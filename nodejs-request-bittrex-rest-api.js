@@ -15,7 +15,6 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
         }, (res) => {
             let data = '';
             res.on('data', (chunk) => {
-                console.log(chunk);
                 data = data.concat(chunk);
             });
             res.on('end', () => {
