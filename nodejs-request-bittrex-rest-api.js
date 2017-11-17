@@ -238,54 +238,41 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
     });
 };
 
-exports.getmarketrsi = (marketName, tickInterval, period) => {
+exports.getmarketrsiline = (marketName, tickInterval, period) => {
     return new Promise((resolve, reject) => {
-        let rsi = [];
+        let rsiLine = [];
         let averageGain = 0;
         let averageLoss = 0;
         bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
                     if (tickIndex < period) {
-                        if (ticks[tickIndex].C - ticks[tickIndex - 1].C > 0) {
-                            averageGain = averageGain + (ticks[tickIndex].C - ticks[tickIndex - 1].C);
-                            // console.log(`\ntickIndex: ${tickIndex}\nclose: ${tick.C}\nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C}\nadva: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \ndecl: 0\naverageGain: ${averageGain}\naverageLoss: ${averageLoss}`);
-                        } else if (ticks[tickIndex].C - ticks[tickIndex - 1].C < 0) {
-                            averageLoss = averageLoss + ((ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1);
-                            // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: ${(ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1} \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}`);
-                        } else {
-                            // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}`);
-                        }
+                        if (tick.C - ticks[tickIndex - 1].C > 0) {
+                            averageGain = averageGain + (tick.C - ticks[tickIndex - 1].C);
+                        } else if (tick.C - ticks[tickIndex - 1].C < 0) {
+                            averageLoss = averageLoss + ((tick.C - ticks[tickIndex - 1].C) * -1);
+                        } else {}
                     } else if (tickIndex === period) {
-                        if (ticks[tickIndex].C - ticks[tickIndex - 1].C > 0) {
-                            averageGain = averageGain + (ticks[tickIndex].C - ticks[tickIndex - 1].C);
-                            // console.log(`\ntickIndex: ${tickIndex}\nclose: ${tick.C}\nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C}\nadva: ${ticks[tickIndex].C - ticks[tickIndex - 1].C}\ndecl: 0\naverageGain: ${averageGain}\naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
-                        } else if (ticks[tickIndex].C - ticks[tickIndex - 1].C < 0) {
-                            averageLoss = averageLoss + ((ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1);
-                            // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: ${(ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1} \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
-                        } else {
-                            // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
-                        }
-                        rsi.push({ index: tickIndex, time: ticks[tickIndex].T, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
+                        if (tick.C - ticks[tickIndex - 1].C > 0) {
+                            averageGain = averageGain + (tick.C - ticks[tickIndex - 1].C);
+                        } else if (tick.C - ticks[tickIndex - 1].C < 0) {
+                            averageLoss = averageLoss + ((tick.C - ticks[tickIndex - 1].C) * -1);
+                        } else {}
+                        rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     } else {
-                        if (ticks[tickIndex].C - ticks[tickIndex - 1].C > 0) {
-                            averageGain = ((averageGain * (period - 1)) + (ticks[tickIndex].C - ticks[tickIndex - 1].C)) / period;
+                        if (tick.C - ticks[tickIndex - 1].C > 0) {
+                            averageGain = ((averageGain * (period - 1)) + (tick.C - ticks[tickIndex - 1].C)) / period;
                             averageLoss = ((averageLoss * (period - 1)) + 0) / period;
-                            // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
-                        } else if (ticks[tickIndex].C - ticks[tickIndex - 1].C < 0) {
+                        } else if (tick.C - ticks[tickIndex - 1].C < 0) {
                             averageGain = ((averageGain * (period - 1)) + 0) / period;
-                            averageLoss = ((averageLoss * (period - 1)) + ((ticks[tickIndex].C - ticks[tickIndex - 1].C) * -1)) / period;
-                            // console.log(`\ntickIndex: ${tickIndex} \nclose: ${tick.C} \nchange: ${ticks[tickIndex].C - ticks[tickIndex - 1].C} \nadva: 0 \ndecl: 0 \naverageGain: ${averageGain} \naverageLoss: ${averageLoss}\nrs: ${(averageGain/period)/(averageLoss/period)}\nrsi: ${100 - (100/(1+(averageGain/period)/(averageLoss/period)))}`);
+                            averageLoss = ((averageLoss * (period - 1)) + ((tick.C - ticks[tickIndex - 1].C) * -1)) / period;
                         }
-                        rsi.push({ index: tickIndex, time: ticks[tickIndex].T, rsi: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
+                        rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
-                        // 100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))
-                        resolve(rsi);
+                        resolve(rsiLine);
                     }
-                } else {
-                    // console.log(`\ntickIndex: ${tickIndex}\nclose: ${tick.C}`);
-                }
+                } else {}
             });
         }).catch(err => {
             reject(err);
@@ -293,6 +280,55 @@ exports.getmarketrsi = (marketName, tickInterval, period) => {
     });
 };
 
+exports.getmarketmacdline = (marketName, tickInterval, fastMAPeriod, slowMAPeriod, signalMAPeriod) => {
+    return new Promise((resolve, reject) => {
+        let closeFastMA = 0;
+        let closeSlowMA = 0;
+        let signalMA = 0;
+        let macdLine = [];
+        let closeFastMALine = [];
+        let closeSlowMALine = [];
+        let signalMALine = [];
+        bittrex.getticks(market.MarketName, interval).then(ticks => {
+            ticks.forEach((tick, tickIndex) => {
+                if (tickIndex !== 0) {
+                    if (tickIndex < fastMAPeriod) {
+                        closeFastMA = closeFastMA + tick.C;
+                    } else if (tickIndex === fastMAPeriod) {
+                        closeFastMA = closeFastMA + tick.C;
+                        closeFastMALine.push({ y: closeFastMA / fastMAPeriod, x: tick.T });
+                    } else if (tickIndex > fastMAPeriod) {
+                        closeFastMA = ((closeFastMA / fastMAPeriod) * (fastMAPeriod - 1)) + tick.C;
+                        closeFastMALine.push({ y: closeFastMA / fastMAPeriod, x: tick.T });
+                    }
+                    if (tickIndex < slowMAPeriod) {
+                        closeSlowMA = closeSlowMA + tick.C;
+                    } else if (tickIndex === slowMAPeriod) {
+                        closeSlowMA = closeSlowMA + tick.C;
+                        closeSlowMALine.push({ y: closeSlowMA / slowMAPeriod, x: tick.T });
+                        macdLine.push({ y: ((closeFastMA / fastMAPeriod) - (closeSlowMA / slowMAPeriod)), x: tick.T });
+                    } else if (tickIndex > slowMAPeriod) {
+                        closeSlowMA = ((closeSlowMA / slowMAPeriod) * (slowMAPeriod - 1)) + tick.C;
+                        closeSlowMALine.push({ y: closeSlowMA / slowMAPeriod, x: tick.T });
+                        macdLine.push({ y: ((closeFastMA / fastMAPeriod) - (closeSlowMA / slowMAPeriod)), x: tick.T });
+                        if (macdLine.length < signalMAPeriod) {
+                            signalMA = signalMA + macdLine[macdLine.length - 1].y;
+                        } else if (macdLine.length === signalMAPeriod) {
+                            signalMA = signalMA + macdLine[macdLine.length - 1].y;
+                            signalMALine.push({ y: signalMA / signalMAPeriod, x: tick.T });
+                        } else if (macdLine.length > signalMAPeriod) {
+                            signalMA = (((signalMA / signalMAPeriod) * (signalMAPeriod - 1)) + macdLine[macdLine.length - 1].y);
+                            signalMALine.push({ y: signalMA / signalMAPeriod, x: tick.T });
+                        }
+                    }
+                } else {}
+            });
+            resolve({ signalMALine: signalMALine, macdLine: macdLine });
+        }).catch(err => {
+            reject(err);
+        });
+    });
+};
 // Warning, this any2any method is experimental.
 // Using USDT in its regular markets works fine.
 // USDT-ANY will be added soon.
