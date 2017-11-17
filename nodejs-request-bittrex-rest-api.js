@@ -258,7 +258,7 @@ exports.getmarketrsiindicator = (marketName, tickInterval, period) => {
                         } else if (tick.C - ticks[tickIndex - 1].C < 0) {
                             averageLoss = averageLoss + ((tick.C - ticks[tickIndex - 1].C) * -1);
                         } else {}
-                        rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
+                        rsiLine.push({ y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     } else {
                         if (tick.C - ticks[tickIndex - 1].C > 0) {
                             averageGain = ((averageGain * (period - 1)) + (tick.C - ticks[tickIndex - 1].C)) / period;
@@ -267,7 +267,7 @@ exports.getmarketrsiindicator = (marketName, tickInterval, period) => {
                             averageGain = ((averageGain * (period - 1)) + 0) / period;
                             averageLoss = ((averageLoss * (period - 1)) + ((tick.C - ticks[tickIndex - 1].C) * -1)) / period;
                         }
-                        rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
+                        rsiLine.push({ y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
                         resolve({ marketName: marketName, rsiLine: rsiLine, tickInterval: tickInterval, period: period });
@@ -296,29 +296,29 @@ exports.getmarketmacdindicator = (marketName, tickInterval, fastMovingAveragePer
                         closeFastMovingAverage = closeFastMovingAverage + tick.C;
                     } else if (tickIndex === fastMovingAveragePeriod) {
                         closeFastMovingAverage = closeFastMovingAverage + tick.C;
-                        closeFastMovingAverageLine.push({ y: closeFastMovingAverage / fastMovingAveragePeriod, x: tick.T });
+                        closeFastMovingAverageLine.push({ y: closeFastMovingAverage / fastMovingAveragePeriod });
                     } else if (tickIndex > fastMovingAveragePeriod) {
                         closeFastMovingAverage = ((closeFastMovingAverage / fastMovingAveragePeriod) * (fastMovingAveragePeriod - 1)) + tick.C;
-                        closeFastMovingAverageLine.push({ y: closeFastMovingAverage / fastMovingAveragePeriod, x: tick.T });
+                        closeFastMovingAverageLine.push({ y: closeFastMovingAverage / fastMovingAveragePeriod });
                     }
                     if (tickIndex < slowMovingAveragePeriod) {
                         closeSlowMovingAverage = closeSlowMovingAverage + tick.C;
                     } else if (tickIndex === slowMovingAveragePeriod) {
                         closeSlowMovingAverage = closeSlowMovingAverage + tick.C;
-                        closeSlowMovingAverageLine.push({ y: closeSlowMovingAverage / slowMovingAveragePeriod, x: tick.T });
-                        macdLine.push({ y: ((closeFastMovingAverage / fastMovingAveragePeriod) - (closeSlowMovingAverage / slowMovingAveragePeriod)), x: tick.T });
+                        closeSlowMovingAverageLine.push({ y: closeSlowMovingAverage / slowMovingAveragePeriod });
+                        macdLine.push({ y: ((closeFastMovingAverage / fastMovingAveragePeriod) - (closeSlowMovingAverage / slowMovingAveragePeriod)) });
                     } else if (tickIndex > slowMovingAveragePeriod) {
                         closeSlowMovingAverage = ((closeSlowMovingAverage / slowMovingAveragePeriod) * (slowMovingAveragePeriod - 1)) + tick.C;
-                        closeSlowMovingAverageLine.push({ y: closeSlowMovingAverage / slowMovingAveragePeriod, x: tick.T });
-                        macdLine.push({ y: ((closeFastMovingAverage / fastMovingAveragePeriod) - (closeSlowMovingAverage / slowMovingAveragePeriod)), x: tick.T });
+                        closeSlowMovingAverageLine.push({ y: closeSlowMovingAverage / slowMovingAveragePeriod });
+                        macdLine.push({ y: ((closeFastMovingAverage / fastMovingAveragePeriod) - (closeSlowMovingAverage / slowMovingAveragePeriod)) });
                         if (macdLine.length < signalMovingAveragePeriod) {
                             signalMovingAverage = signalMovingAverage + macdLine[macdLine.length - 1].y;
                         } else if (macdLine.length === signalMovingAveragePeriod) {
                             signalMovingAverage = signalMovingAverage + macdLine[macdLine.length - 1].y;
-                            signalMovingAverageLine.push({ y: signalMovingAverage / signalMovingAveragePeriod, x: tick.T });
+                            signalMovingAverageLine.push({ y: signalMovingAverage / signalMovingAveragePeriod });
                         } else if (macdLine.length > signalMovingAveragePeriod) {
                             signalMovingAverage = (((signalMovingAverage / signalMovingAveragePeriod) * (signalMovingAveragePeriod - 1)) + macdLine[macdLine.length - 1].y);
-                            signalMovingAverageLine.push({ y: signalMovingAverage / signalMovingAveragePeriod, x: tick.T });
+                            signalMovingAverageLine.push({ y: signalMovingAverage / signalMovingAveragePeriod });
                         }
                     }
                 } else {}
