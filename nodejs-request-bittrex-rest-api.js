@@ -238,7 +238,7 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
     });
 };
 
-exports.getmarketrsiline = (marketName, tickInterval, period) => {
+exports.getmarketrsiindicator = (marketName, tickInterval, period) => {
     return new Promise((resolve, reject) => {
         let rsiLine = [];
         let averageGain = 0;
@@ -270,7 +270,7 @@ exports.getmarketrsiline = (marketName, tickInterval, period) => {
                         rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
-                        resolve({ rsiLine: rsiLine });
+                        resolve(rsiLine);
                     }
                 } else {}
             });
@@ -280,50 +280,50 @@ exports.getmarketrsiline = (marketName, tickInterval, period) => {
     });
 };
 
-exports.getmarketmacdline = (marketName, tickInterval, fastMAPeriod, slowMAPeriod, signalMAPeriod) => {
+exports.getmarketmacdindicator = (marketName, tickInterval, fastMovingAveragePeriod, slowMovingAveragePeriod, signalMovingAveragePeriod) => {
     return new Promise((resolve, reject) => {
-        let closeFastMA = 0;
-        let closeSlowMA = 0;
-        let signalMA = 0;
+        let closeFastMovingAverage = 0;
+        let closeSlowMovingAverage = 0;
+        let signalMovingAverage = 0;
         let macdLine = [];
-        let closeFastMALine = [];
-        let closeSlowMALine = [];
-        let signalMALine = [];
+        let closeFastMovingAverageLine = [];
+        let closeSlowMovingAverageLine = [];
+        let signalMovingAverageLine = [];
         bittrex.getticks(marketName, tickInterval).then(ticks => {
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
-                    if (tickIndex < fastMAPeriod) {
-                        closeFastMA = closeFastMA + tick.C;
-                    } else if (tickIndex === fastMAPeriod) {
-                        closeFastMA = closeFastMA + tick.C;
-                        closeFastMALine.push({ y: closeFastMA / fastMAPeriod, x: tick.T });
-                    } else if (tickIndex > fastMAPeriod) {
-                        closeFastMA = ((closeFastMA / fastMAPeriod) * (fastMAPeriod - 1)) + tick.C;
-                        closeFastMALine.push({ y: closeFastMA / fastMAPeriod, x: tick.T });
+                    if (tickIndex < fastMovingAveragePeriod) {
+                        closeFastMovingAverage = closeFastMovingAverage + tick.C;
+                    } else if (tickIndex === fastMovingAveragePeriod) {
+                        closeFastMovingAverage = closeFastMovingAverage + tick.C;
+                        closeFastMovingAverageLine.push({ y: closeFastMovingAverage / fastMovingAveragePeriod, x: tick.T });
+                    } else if (tickIndex > fastMovingAveragePeriod) {
+                        closeFastMovingAverage = ((closeFastMovingAverage / fastMovingAveragePeriod) * (fastMovingAveragePeriod - 1)) + tick.C;
+                        closeFastMovingAverageLine.push({ y: closeFastMovingAverage / fastMovingAveragePeriod, x: tick.T });
                     }
-                    if (tickIndex < slowMAPeriod) {
-                        closeSlowMA = closeSlowMA + tick.C;
-                    } else if (tickIndex === slowMAPeriod) {
-                        closeSlowMA = closeSlowMA + tick.C;
-                        closeSlowMALine.push({ y: closeSlowMA / slowMAPeriod, x: tick.T });
-                        macdLine.push({ y: ((closeFastMA / fastMAPeriod) - (closeSlowMA / slowMAPeriod)), x: tick.T });
-                    } else if (tickIndex > slowMAPeriod) {
-                        closeSlowMA = ((closeSlowMA / slowMAPeriod) * (slowMAPeriod - 1)) + tick.C;
-                        closeSlowMALine.push({ y: closeSlowMA / slowMAPeriod, x: tick.T });
-                        macdLine.push({ y: ((closeFastMA / fastMAPeriod) - (closeSlowMA / slowMAPeriod)), x: tick.T });
-                        if (macdLine.length < signalMAPeriod) {
-                            signalMA = signalMA + macdLine[macdLine.length - 1].y;
-                        } else if (macdLine.length === signalMAPeriod) {
-                            signalMA = signalMA + macdLine[macdLine.length - 1].y;
-                            signalMALine.push({ y: signalMA / signalMAPeriod, x: tick.T });
-                        } else if (macdLine.length > signalMAPeriod) {
-                            signalMA = (((signalMA / signalMAPeriod) * (signalMAPeriod - 1)) + macdLine[macdLine.length - 1].y);
-                            signalMALine.push({ y: signalMA / signalMAPeriod, x: tick.T });
+                    if (tickIndex < slowMovingAveragePeriod) {
+                        closeSlowMovingAverage = closeSlowMovingAverage + tick.C;
+                    } else if (tickIndex === slowMovingAveragePeriod) {
+                        closeSlowMovingAverage = closeSlowMovingAverage + tick.C;
+                        closeSlowMovingAverageLine.push({ y: closeSlowMovingAverage / slowMovingAveragePeriod, x: tick.T });
+                        macdLine.push({ y: ((closeFastMovingAverage / fastMovingAveragePeriod) - (closeSlowMovingAverage / slowMovingAveragePeriod)), x: tick.T });
+                    } else if (tickIndex > slowMovingAveragePeriod) {
+                        closeSlowMovingAverage = ((closeSlowMovingAverage / slowMovingAveragePeriod) * (slowMovingAveragePeriod - 1)) + tick.C;
+                        closeSlowMovingAverageLine.push({ y: closeSlowMovingAverage / slowMovingAveragePeriod, x: tick.T });
+                        macdLine.push({ y: ((closeFastMovingAverage / fastMovingAveragePeriod) - (closeSlowMovingAverage / slowMovingAveragePeriod)), x: tick.T });
+                        if (macdLine.length < signalMovingAveragePeriod) {
+                            signalMovingAverage = signalMovingAverage + macdLine[macdLine.length - 1].y;
+                        } else if (macdLine.length === signalMovingAveragePeriod) {
+                            signalMovingAverage = signalMovingAverage + macdLine[macdLine.length - 1].y;
+                            signalMovingAverageLine.push({ y: signalMovingAverage / signalMovingAveragePeriod, x: tick.T });
+                        } else if (macdLine.length > signalMovingAveragePeriod) {
+                            signalMovingAverage = (((signalMovingAverage / signalMovingAveragePeriod) * (signalMovingAveragePeriod - 1)) + macdLine[macdLine.length - 1].y);
+                            signalMovingAverageLine.push({ y: signalMovingAverage / signalMovingAveragePeriod, x: tick.T });
                         }
                     }
                 } else {}
             });
-            resolve({ signalMALine: signalMALine, macdLine: macdLine });
+            resolve({ signalMovingAverageLine: signalMovingAverageLine, macdLine: macdLine });
         }).catch(err => {
             reject(err);
         });
