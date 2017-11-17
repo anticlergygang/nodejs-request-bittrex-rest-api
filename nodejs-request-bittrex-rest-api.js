@@ -231,7 +231,7 @@ exports.getopenorders = (apikey, secret, marketName) => {
 exports.getticks = (marketName, tickInterval = 'fiveMin') => {
     return new Promise((resolve, reject) => {
         bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
-            resolve(ticks);
+            resolve({ ticks: ticks, marketName: marketName, tickInterval: tickInterval });
         }).catch(err => {
             reject(err);
         });
@@ -270,7 +270,7 @@ exports.getmarketrsiindicator = (marketName, tickInterval, period) => {
                         rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
-                        resolve(rsiLine);
+                        resolve({ marketName: marketName, rsiLine: rsiLine });
                     }
                 } else {}
             });
@@ -323,7 +323,7 @@ exports.getmarketmacdindicator = (marketName, tickInterval, fastMovingAveragePer
                     }
                 } else {}
             });
-            resolve({ signalMovingAverageLine: signalMovingAverageLine, macdLine: macdLine });
+            resolve({ marketName: marketName, signalMovingAverageLine: signalMovingAverageLine, macdLine: macdLine });
         }).catch(err => {
             reject(err);
         });
