@@ -26,6 +26,7 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
                         reject(jsonRes.message);
                     }
                 } catch (e) {
+                    console.log(data);
                     reject(e);
                 }
             });
