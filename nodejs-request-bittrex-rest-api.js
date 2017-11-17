@@ -15,11 +15,13 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
         }, (res) => {
             let data = '';
             res.on('data', (chunk) => {
+                console.log(chunk);
                 data = data.concat(chunk);
             });
             res.on('end', () => {
                 try {
-                    let jsonRes = JSON.parse(data)
+                    console.log(data);
+                    let jsonRes = JSON.parse(data);
                     if (jsonRes.success) {
                         resolve(jsonRes.result);
                     } else {
