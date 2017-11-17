@@ -289,7 +289,7 @@ exports.getmarketmacdline = (marketName, tickInterval, fastMAPeriod, slowMAPerio
         let closeFastMALine = [];
         let closeSlowMALine = [];
         let signalMALine = [];
-        bittrex.getticks(market.MarketName, interval).then(ticks => {
+        bittrex.getticks(marketName interval).then(ticks => {
             ticks.forEach((tick, tickIndex) => {
                 if (tickIndex !== 0) {
                     if (tickIndex < fastMAPeriod) {
