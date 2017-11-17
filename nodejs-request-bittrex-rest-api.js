@@ -270,7 +270,7 @@ exports.getmarketrsiindicator = (marketName, tickInterval, period) => {
                         rsiLine.push({ x: tick.T, y: (100 - (100 / (1 + (averageGain / period) / (averageLoss / period)))) });
                     }
                     if (tickIndex === ticks.length - 1) {
-                        resolve({ marketName: marketName, rsiLine: rsiLine });
+                        resolve({ marketName: marketName, rsiLine: rsiLine, tickInterval: tickInterval, period: period });
                     }
                 } else {}
             });
@@ -323,7 +323,7 @@ exports.getmarketmacdindicator = (marketName, tickInterval, fastMovingAveragePer
                     }
                 } else {}
             });
-            resolve({ marketName: marketName, signalMovingAverageLine: signalMovingAverageLine, macdLine: macdLine });
+            resolve({ marketName: marketName, signalMovingAverageLine: signalMovingAverageLine, macdLine: macdLine, fastMovingAveragePeriod: fastMovingAveragePeriod, slowMovingAveragePeriod: slowMovingAveragePeriod, signalMovingAveragePeriod: signalMovingAveragePeriod });
         }).catch(err => {
             reject(err);
         });
