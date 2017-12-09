@@ -1,5 +1,6 @@
 const https = require('https');
 const crypto = require('crypto');
+const util = require('util');
 const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
     return new Promise((resolve, reject) => {
         let path = `/api/${version}/${method}?${query}&nonce=${(new Date().getTime())}`;
