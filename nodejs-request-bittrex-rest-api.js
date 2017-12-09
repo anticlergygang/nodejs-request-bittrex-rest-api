@@ -25,14 +25,14 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
                     } else {
                         reject(jsonRes.message);
                     }
-                } catch (e) {
-                    console.log(data);
-                    reject(e);
+                } catch (err) {
+                    console.log(`bittrexRequest data recieved b4 error: ${data}`);
+                    reject(`bittrexRequest err: ${util.inspect(err)}`);
                 }
             });
         });
-        req.on('error', (e) => {
-            reject(e);
+        req.on('error', (err) => {
+            reject(`bittrexRequest err: ${util.inspect(err)}`);
         });
         req.end();
     });
@@ -40,191 +40,70 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
 
 exports.getmarkets = () => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getmarkets', '', 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getmarkets', '', 'v1.1', '').then(markets => {
+            resolve(markets);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getmarkets err: ${util.inspect(err)}`);
         });
     });
 };
 
 exports.getcurrencies = () => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getcurrencies', '', 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getcurrencies', '', 'v1.1', '').then(currencies => {
+            resolve(currencies);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getcurrencies err: ${util.inspect(err)}`);
         });
     });
-
 };
 
 exports.getmarketsummaries = () => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getmarketsummaries', '', 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getmarketsummaries', '', 'v1.1', '').then(marketsummaries => {
+            resolve(marketsummaries);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getmarketsummaries err: ${util.inspect(err)}`);
         });
     });
 };
 
 exports.getticker = (marketName) => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getticker', `market=${marketName}`, 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getticker', `market=${marketName}`, 'v1.1', '').then(ticker => {
+            resolve(ticker);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getticker err: ${util.inspect(err)}`);
         });
     });
 };
 
 exports.getmarketsummary = (marketName) => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getmarketsummary', `market=${marketName}`, 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getmarketsummary', `market=${marketName}`, 'v1.1', '').then(marketsummarie => {
+            resolve(marketsummarie);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getmarketsummary err: ${util.inspect(err)}`);
         });
     });
 };
 
 exports.getmarkethistory = (marketName) => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getmarkethistory', `market=${marketName}`, 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getmarkethistory', `market=${marketName}`, 'v1.1', '').then(markethistory => {
+            resolve(markethistory);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getmarkethistory err: ${util.inspect(err)}`);
         });
     });
 };
 
 exports.getorderbook = (marketName, type) => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getorderbook', `market=${marketName}&type=${type}`, 'v1.1', '').then(out => {
-            resolve(out);
+        bittrexRequest('public/getorderbook', `market=${marketName}&type=${type}`, 'v1.1', '').then(orderbook => {
+            resolve(orderbook);
         }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getbalances = (apikey, secret) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getbalances', `apikey=${apikey}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getbalance = (apikey, secret, currency) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getbalance', `apikey=${apikey}&currency=${currency}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getdepositaddress = (apikey, secret, currency) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getdepositaddress', `apikey=${apikey}&currency=${currency}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.withdraw = (apikey, secret, currency, quantity, address) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/withdraw', `apikey=${apikey}&currency=${currency}&quantity=${currency}&address=${address}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getorder = (apikey, secret, uuid) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${uuid}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getorderhistory = (apikey, secret, marketName) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getorderhistory', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getwithdrawalhistory = (apikey, secret, marketName) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getwithdrawalhistory', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getdeposithistory = (apikey, secret, marketName) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('account/getdeposithistory', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.buylimit = (apikey, secret, marketName, quantity, rate) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('market/buylimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity}&rate=${rate}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.selllimit = (apikey, secret, marketName, quantity, rate) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('market/selllimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity}&rate=${rate}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.cancel = (apikey, secret, uuid) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('market/cancel', `apikey=${apikey}&uuid=${uuid}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
-        });
-    });
-};
-
-exports.getopenorders = (apikey, secret, marketName) => {
-    return new Promise((resolve, reject) => {
-        bittrexRequest('market/getopenorders', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(out => {
-            resolve(out);
-        }).catch(err => {
-            reject(err);
+            reject(`exports.getorderbook err: ${util.inspect(err)}`);
         });
     });
 };
@@ -234,7 +113,7 @@ exports.getticks = (marketName, tickInterval = 'fiveMin') => {
         bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
             resolve({ ticks: ticks, marketName: marketName, tickInterval: tickInterval });
         }).catch(err => {
-            reject(err);
+            reject(`exports.getticks err: ${util.inspect(err)}`);
         });
     });
 };
@@ -276,7 +155,7 @@ exports.getmarketrsiindicator = (marketName, tickInterval, period) => {
                 } else {}
             });
         }).catch(err => {
-            reject(err);
+            reject(`exports.getmarketrsiindicator err: ${util.inspect(err)}`);
         });
     });
 };
@@ -326,98 +205,127 @@ exports.getmarketmacdindicator = (marketName, tickInterval, fastMovingAveragePer
             });
             resolve({ marketName: marketName, signalMovingAverageLine: signalMovingAverageLine, macdLine: macdLine, fastMovingAveragePeriod: fastMovingAveragePeriod, slowMovingAveragePeriod: slowMovingAveragePeriod, signalMovingAveragePeriod: signalMovingAveragePeriod });
         }).catch(err => {
-            reject(err);
+            reject(`exports.getmarketmacdindicator err: ${util.inspect(err)}`);
         });
     });
 };
-// Warning, this any2any method is experimental.
-// Using USDT in its regular markets works fine.
-// USDT-ANY will be added soon.
-// This promise may resolve with an unexpected expected result.
-// If it gets the rate wrong, it may result in bad trade.
-// Just don't use this unless you know whats going to happen.
-exports.any2any = (apikey, secret, currencyFrom, currencyTo, quantity) => {
+
+exports.getbalances = (apikey, secret) => {
     return new Promise((resolve, reject) => {
-        let activeMarkets = {};
-        let currencyFromBases = [];
-        let currencyToBases = [];
-        let currencyFromMarkets = [];
-        let currencyToMarkets = [];
-        let currenciesShareABaseCurrency = false;
-        let sharedBaseCurrency = '';
-        bittrexRequest('public/getmarketsummaries', '', 'v1.1', '').then(markets => {
-            markets.forEach((market, marketIndex) => {
-                activeMarkets[market.MarketName] = market;
-            });
-            Object.keys(activeMarkets).forEach((activeMarketName, activeMarketNameIndex) => {
-                if (activeMarketName.split('-')[1] === currencyFrom) {
-                    currencyFromBases.push(activeMarketName.split('-')[0]);
-                }
-                if (activeMarketName.split('-')[1] === currencyTo) {
-                    currencyToBases.push(activeMarketName.split('-')[0]);
-                }
-                if (activeMarketName.split('-')[0] === currencyFrom) {
-                    currencyFromMarkets.push(activeMarketName.split('-')[1]);
-                }
-                if (activeMarketName.split('-')[0] === currencyTo) {
-                    currencyToMarkets.push(activeMarketName.split('-')[1]);
-                }
-            });
-            currencyFromBases.forEach((currencyFromBase, currencyFromBaseIndex) => {
-                currencyToBases.forEach((currencyToBase, currencyToBaseIndex) => {
-                    if (currencyFromBase === currencyToBase) {
-                        currenciesShareABaseCurrency = true;
-                        sharedBaseCurrency = currencyToBase;
-                    }
-                });
-            });
-            if (Object.keys(activeMarkets).indexOf(`${currencyFrom}-${currencyTo}`) !== -1) {
-                var marketName = `${currencyFrom}-${currencyTo}`;
-                return bittrexRequest('market/buylimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity / activeMarkets[marketName].Ask}&rate=${activeMarkets[marketName].Ask}`, 'v1.1', secret);
-            } else if (Object.keys(activeMarkets).indexOf(`${currencyTo}-${currencyFrom}`) !== -1) {
-                var marketName = `${currencyTo}-${currencyFrom}`;
-                return bittrexRequest('market/selllimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity}&rate=${activeMarkets[marketName].Bid}`, 'v1.1', secret);
-            } else if (currenciesShareABaseCurrency) {
-                return new Promise((resolve, reject) => {
-                    var marketName1 = `${sharedBaseCurrency}-${currencyFrom}`;
-                    var marketName2 = `${sharedBaseCurrency}-${currencyTo}`;
-                    bittrexRequest('market/selllimit', `apikey=${apikey}&market=${marketName1}&quantity=${quantity}&rate=${activeMarkets[marketName1].Bid}`, 'v1.1', secret).then(sellUuid => {
-                        const checkIfSellCloseInterval = setInterval(() => {
-                            bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${sellUuid.uuid}`, 'v1.1', secret).then(sellOrder => {
-                                if (!sellOrder.IsOpen) {
-                                    clearInterval(checkIfSellCloseInterval);
-                                    bittrexRequest('market/buylimit', `apikey=${apikey}&market=${marketName2}&quantity=${((sellOrder.Price - sellOrder.CommissionPaid)-sellOrder.CommissionPaid) / activeMarkets[marketName2].Ask}&rate=${activeMarkets[marketName2].Ask}`, 'v1.1', secret).then(buyUuid => {
-                                        const checkIfBuyCloseInterval = setInterval(() => {
-                                            bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${buyUuid.uuid}`, 'v1.1', secret).then(buyOrder => {
-                                                if (!buyOrder.IsOpen) {
-                                                    clearInterval(checkIfBuyCloseInterval);
-                                                    resolve('currency converted');
-                                                }
-                                            }).catch(err => {
-                                                clearInterval(checkIfBuyCloseInterval);
-                                                reject(err);
-                                            });
-                                        }, 2000);
-                                    }).catch(err => {
-                                        clearInterval(checkIfSellCloseInterval);
-                                        reject(err);
-                                    });
-                                }
-                            }).catch(err => {
-                                reject(err);
-                            });
-                        }, 2000);
-                    }).catch(err => {
-                        reject(err);
-                    });
-                });
-            } else {
-                return Promise.resolve('fawkenll');
-            }
-        }).then(out => {
-            resolve(out);
+        bittrexRequest('account/getbalances', `apikey=${apikey}`, 'v1.1', secret).then(balances => {
+            resolve(balances);
         }).catch(err => {
-            reject(err);
+            reject(`exports.getbalances err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getbalance = (apikey, secret, currency) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/getbalance', `apikey=${apikey}&currency=${currency}`, 'v1.1', secret).then(balance => {
+            resolve(balance);
+        }).catch(err => {
+            reject(`exports.getbalance err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getdepositaddress = (apikey, secret, currency) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/getdepositaddress', `apikey=${apikey}&currency=${currency}`, 'v1.1', secret).then(address => {
+            resolve(address);
+        }).catch(err => {
+            reject(`exports.getdepositaddress err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.withdraw = (apikey, secret, currency, quantity, address) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/withdraw', `apikey=${apikey}&currency=${currency}&quantity=${currency}&address=${address}`, 'v1.1', secret).then(tx => {
+            resolve(tx);
+        }).catch(err => {
+            reject(`exports.withdraw err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getorder = (apikey, secret, uuid) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/getorder', `apikey=${apikey}&uuid=${uuid}`, 'v1.1', secret).then(order => {
+            resolve(order);
+        }).catch(err => {
+            reject(`exports.getorder err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getorderhistory = (apikey, secret, marketName) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/getorderhistory', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(orderHisotry => {
+            resolve(orderHisotry);
+        }).catch(err => {
+            reject(`exports.getorderhistory err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getwithdrawalhistory = (apikey, secret, marketName) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/getwithdrawalhistory', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(withdrawalHistory => {
+            resolve(withdrawalHistory);
+        }).catch(err => {
+            reject(`exports.getwithdrawalhistory err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getdeposithistory = (apikey, secret, marketName) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('account/getdeposithistory', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(depositHistory => {
+            resolve(depositHistory);
+        }).catch(err => {
+            reject(`exports.getdeposithistory err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.buylimit = (apikey, secret, marketName, quantity, rate) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('market/buylimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity}&rate=${rate}`, 'v1.1', secret).then(order => {
+            resolve(order);
+        }).catch(err => {
+            reject(`exports.buylimit err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.selllimit = (apikey, secret, marketName, quantity, rate) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('market/selllimit', `apikey=${apikey}&market=${marketName}&quantity=${quantity}&rate=${rate}`, 'v1.1', secret).then(order => {
+            resolve(order);
+        }).catch(err => {
+            reject(`exports.selllimit err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.cancel = (apikey, secret, uuid) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('market/cancel', `apikey=${apikey}&uuid=${uuid}`, 'v1.1', secret).then(confirmation => {
+            resolve(confirmation);
+        }).catch(err => {
+            reject(`exports.cancel err: ${util.inspect(err)}`);
+        });
+    });
+};
+
+exports.getopenorders = (apikey, secret, marketName) => {
+    return new Promise((resolve, reject) => {
+        bittrexRequest('market/getopenorders', `apikey=${apikey}&market=${marketName}`, 'v1.1', secret).then(orders => {
+            resolve(orders);
+        }).catch(err => {
+            reject(`exports.getopenorders err: ${util.inspect(err)}`);
         });
     });
 };

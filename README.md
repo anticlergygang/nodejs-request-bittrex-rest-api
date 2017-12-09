@@ -1,106 +1,141 @@
 Enjoy!
 
-Find a dev: https://discord.gg/PKk3Xc4
+Find a dev: https://discord.gg/RRHvYUe
 
 Get your apikey and sceret from: https://bittrex.com/home/api
 
-```javascript
+```js
 const bittrex = require('nodejs-request-bittrex-rest-api');
 
-bittrex.getmarkets().then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getmarkets().then(markets => {
+    console.log(markets);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getcurrencies().then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getcurrencies().then(currencies => {
+    console.log(currencies);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getmarketsummaries().then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getmarketsummaries().then(marketsummaries => {
+    console.log(marketsummaries);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getticker(marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getticker(marketName).then(ticker => {
+    console.log(ticker);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getmarketsummary(marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getmarketsummary(marketName).then(marketsummary => {
+    console.log(marketsummary);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getmarkethistory(marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getmarkethistory(marketName).then(markethistory => {
+    console.log(markethistory);
+}).catch(err => {
+    console.log(err);
+});
 
-// 'tickInterval' must be one of the following 'oneMin', 'fiveMin', 'thirtyMin', 'hour', or 'day'.
-bittrex.getticks(marketName, tickInterval).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getorderbook(marketName, type).then(orderbook => {
+    console.log(orderbook);
+}).catch(err => {
+    console.log(err);
+});
 
-// 'type' must be one of the following 'buy', 'sell', or 'both'.
-bittrex.getorderbook(marketName, type).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getticks(marketName, tickInterval).then(ticks => {
+    console.log(ticks);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getbalances(apikey, secret).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getmarketrsiindicator(marketName, tickInterval, period).then(rsiindicator => {
+    console.log(rsiindicator);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getbalance(apikey, secret, currency).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getmarketmacdindicator(marketName, tickInterval, fastMovingAveragePeriod, slowMovingAveragePeriod, signalMovingAveragePeriod).then(macdindicator => {
+    console.log(macdindicator);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getdepositaddress(apikey, secret, currency).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getbalances(apikey, secret).then(balances => {
+    console.log(balances);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.withdraw(apikey, secret, currency, quantity, address).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getbalance(apikey, secret, currency).then(balance => {
+    console.log(balance);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getorder(apikey, secret, uuid).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getdepositaddress(apikey, secret, currency).then(depositaddress => {
+    console.log(depositaddress);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getorderhistory(apikey, secret, marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.withdraw(apikey, secret, currency, quantity, address).then(tx => {
+    console.log(tx);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getwithdrawalhistory(apikey, secret, marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getorder(apikey, secret, uuid).then(order => {
+    console.log(order);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getdeposithistory(apikey, secret, marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getorderhistory(apikey, secret, marketName).then(orderhistory => {
+    console.log(orderhistory);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.buylimit(apikey, secret, marketName, quantity, rate).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getwithdrawalhistory(apikey, secret, marketName).then(withdrawalhistory => {
+    console.log(withdrawalhistory);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.selllimit(apikey, secret, marketName, quantity, rate).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getdeposithistory(apikey, secret, marketName).then(deposithistory => {
+    console.log(deposithistory);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.cancel(apikey, secret, uuid).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.buylimit(apikey, secret, marketName, quantity, rate).then(tx => {
+    console.log(tx);
+}).catch(err => {
+    console.log(err);
+});
 
-bittrex.getopenorders(apikey, secret, marketName).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.selllimit(apikey, secret, marketName, quantity, rate).then(tx => {
+    console.log(tx);
+}).catch(err => {
+    console.log(err);
+});
 
-// 'tickInterval' must be one of the following 'oneMin', 'fiveMin', 'thirtyMin', 'hour', or 'day'.
-bittrex.getmarketrsi(marketName, tickInterval, period).then(out => {
-    console.log(out)
-}).catch(err => {};
+bittrex.cancel(apikey, secret, uuid).then(tx => {
+    console.log(tx);
+}).catch(err => {
+    console.log(err);
+});
 
-// Warning, this any2any method is experimental.
-// Using USDT in its regular markets works fine.
-// USDT-ANY will be added soon.
-// This promise may resolve with an unexpected expected result.
-// If it gets the rate wrong, it may result in bad trade.
-// Just don't use this unless you know whats going to happen.
-bittrex.any2any(apikey, secret, currencyFrom, currencyTo, fromQuantity).then(out => {
-    console.log(out);
-}).catch(err => {});
+bittrex.getopenorders(apikey, secret, marketName).then(orders => {
+    console.log(orders);
+}).catch(err => {
+    console.log(err);
+});
 ```
