@@ -27,8 +27,7 @@ const bittrexRequest = (method, query = '', version = 'v1.1', secret = '') => {
                         reject(jsonRes.message);
                     }
                 } catch (err) {
-                    console.log(`bittrexRequest data recieved b4 error: ${data}`);
-                    reject(`bittrexRequest err: ${util.inspect(err)}`);
+                    reject(`bittrexRequest err: ${util.inspect(err)}\nbittrexRequest data recieved b4 error: ${data}`);
                 }
             });
         });
