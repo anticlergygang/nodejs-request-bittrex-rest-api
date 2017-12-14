@@ -111,7 +111,21 @@ exports.getorderbook = (marketName, type) => {
 exports.getticks = (marketName, tickInterval = 'fiveMin') => {
     return new Promise((resolve, reject) => {
         bittrexRequest('pub/market/GetTicks', `marketName=${marketName}&tickInterval=${tickInterval}`, 'v2.0').then(ticks => {
-            resolve({ ticks: ticks, marketName: marketName, tickInterval: tickInterval });
+            let open = [],
+                high = [],
+                low = [],
+                close = [],
+                volume = [],
+                time = [];
+            ticks.forEach((tick, i) => {
+                open.push(tick.O);
+                high.push(tick.H);
+                low.push(tick.L);
+                close.push(tick.C);
+                volume.push(tick.V);
+                time.push(tick.T);
+            });
+            resolve({ ticks: { open: open, high: high, low: low, close: close, volume: volume, time: time }, marketName: marketName, tickInterval: tickInterval });
         }).catch(err => {
             reject(`exports.getticks err: ${util.inspect(err)}`);
         });
