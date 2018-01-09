@@ -80,8 +80,8 @@ exports.getticker = (marketName) => {
 
 exports.getmarketsummary = (marketName) => {
     return new Promise((resolve, reject) => {
-        bittrexRequest('public/getmarketsummary', `market=${marketName}`, 'v1.1', '').then(marketsummarie => {
-            resolve(marketsummarie);
+        bittrexRequest('public/getmarketsummary', `market=${marketName}`, 'v1.1', '').then(marketsummary => {
+            resolve(marketsummary[0]);
         }).catch(err => {
             reject(`exports.getmarketsummary err: ${util.inspect(err)}`);
         });
