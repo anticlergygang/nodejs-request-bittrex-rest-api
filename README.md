@@ -55,18 +55,6 @@ bittrex.getticks(marketName, tickInterval).then(ticks => {
     console.log(err);
 });
 
-bittrex.getmarketrsiindicator(marketName, tickInterval, period).then(rsiindicator => {
-    console.log(rsiindicator);
-}).catch(err => {
-    console.log(err);
-});
-
-bittrex.getmarketmacdindicator(marketName, tickInterval, fastMovingAveragePeriod, slowMovingAveragePeriod, signalMovingAveragePeriod).then(macdindicator => {
-    console.log(macdindicator);
-}).catch(err => {
-    console.log(err);
-});
-
 bittrex.getbalances(apikey, secret).then(balances => {
     console.log(balances);
 }).catch(err => {
